@@ -15,11 +15,11 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LoansController.class)
 class LoansControllerTest {
@@ -62,6 +62,29 @@ class LoansControllerTest {
                         }
                         """))
                 .andExpect(status().isOk());
+
+    }
+
+    @Test
+    void givenCustomerIdAsEmpty_whenGetLoansByCustomer_thenReturnBadRequest() throws Exception {
+        List<Loan> loans = List.of(createLoan());
+        when(loansService.getLoansByCustomer(any(Customer.class), anyBoolean())).thenReturn(loans);
+        this.mockMvc.perform(post(GET_LOANS_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        {
+                            "customerId": null
+                        }
+                        """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Validation issues. Check in 'errors' field in the response."))
+                .andExpect(jsonPath("$.errors").isNotEmpty())
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[*]").isNotEmpty())
+                .andExpect(jsonPath("$.errors[0].field").value("customerId"))
+                .andExpect(jsonPath("$.errors[0].message").value("must not be null"));
+
 
     }
 
