@@ -23,7 +23,7 @@ public class LoansController {
         this.loansService = loansService;
     }
 
-    @PostMapping(path = "/loan", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/loan", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public List<Loan> getLoansByCustomer(@RequestBody @Valid Customer customer, @RequestParam(name = "asc", required = false) Boolean asc) {
         return loansService.getLoansByCustomer(customer, asc != null && asc);
     }
