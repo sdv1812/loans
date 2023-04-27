@@ -15,11 +15,12 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
-import static org.hamcrest.core.StringContains.containsString;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(LoansController.class)
 class LoansControllerTest {
@@ -49,6 +50,7 @@ class LoansControllerTest {
 
     @MockBean
     private LoansService loansService;
+
 
     @Test
     void givenCustomerId_whenGetLoansByCustomer_thenReturnLoans() throws Exception {
@@ -84,8 +86,6 @@ class LoansControllerTest {
                 .andExpect(jsonPath("$.errors[*]").isNotEmpty())
                 .andExpect(jsonPath("$.errors[0].field").value("customerId"))
                 .andExpect(jsonPath("$.errors[0].message").value("must not be null"));
-
-
     }
 
     private Loan createLoan() {
