@@ -53,8 +53,7 @@ public class LoansControllerIT {
     @Test
     void givenCustomerId_whenGetLoansByCustomer_thenReturnLoans() {
         List<Loan> loans = List.of(createLoan());
-        Customer customer = new Customer();
-        customer.setCustomerId(CUSTOMER_ID);
+        Customer customer = new Customer(CUSTOMER_ID);
         when(loansService.getLoansByCustomer(any(Customer.class), anyBoolean())).thenReturn(loans);
 
         ResponseEntity<Loan[]> loansRespEntity = this.testRestTemplate.postForEntity(GET_LOANS_URL, customer, Loan[].class);
